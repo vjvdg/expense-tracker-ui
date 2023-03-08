@@ -14,7 +14,7 @@ function useApi(apiFunction) {
         apiFunction(args)
             .then(response => {
                 console.log('Response from API call:', response.data);
-                setData(response.data);
+                setData(response.data.data);
             }).catch(error => {
                 setError(error);
                 console.error('Error when calling API:', error);
