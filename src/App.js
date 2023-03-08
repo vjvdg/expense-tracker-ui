@@ -1,12 +1,14 @@
 import React from "react";
 import "./App.css";
+import Expense from "./components/Expense";
 
-const App = () => {
+function App() {
   return (
     <div>
       <h1>Expense Tracker</h1>
+      <Expense />
     </div>
   );
-};
+}
 
 export default App;
