@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useApi } from "../hooks/UseApi";
 import expenseApi from "../api/ExpenseApi";
+import { DataGrid } from '@mui/x-data-grid';
 
 function Expense() {
 
@@ -12,38 +13,39 @@ function Expense() {
       getExpensesApi.request({ year: date.getFullYear(), month: date.getMonth() + 1 });
     }, []);
 
+    const currencyFormatter = new Intl.NumberFormat('en-SG', {
+      style: 'currency',
+      currency: 'SGD',
+    });
+
+    const columns = [
+      { 
+        field: 'expenseDate', 
+        headerName: 'Date',
+        flex: 2,
+        headerAlign: 'center',
+        align: 'center',
+        valueGetter: (params) => `${params.row.expenseDate.slice(0, 10)}`
+      },
+      { field: 'item', headerName: 'Item', flex: 5, align: 'center', headerAlign: 'center'},
+      { field: 'category', headerName: 'Category', flex: 2, align: 'center', headerAlign: 'center'},
+      {
+        field: 'amount',
+        headerName: 'Amount',
+        flex: 1, align: 'center',
+        headerAlign: 'center',
+        valueFormatter: ({ value }) => currencyFormatter.format(value)
+      }
+    ];
+
     return (
-      <div className="container pt-2">
-        <div className="row pt-2 pb-2" style={{ textAlign: "center"}}>
-          <div className="col"><b>Date</b></div>
-          <div className="col"><b>Item</b></div>
-          <div className="col"><b>Category</b></div>
-          <div className="col"><b>Amount</b></div>
+        <div style={{ height: 700, width: '90%', margin: 'auto'}}>
+          <DataGrid 
+            rows={expenses}
+            columns={columns}
+          />
         </div>
-        {renderExpenses(expenses)}
-      </div>
     );
-}
-
-function renderExpenses(expenses) {
-  const renderedExpenses = [];
-
-  for (const [index, expense] of expenses.entries()) {
-    renderedExpenses.push(
-      <div key={index} className="row pt-2 pb-2" style={{ textAlign: "center"}}>
-        <div className="col">{expense.expenseDate.slice(0, 10)}</div>
-        <div className="col">{expense.item}</div>
-        <div className="col">{expense.category}</div>
-        <div className="col">{expense.amount}</div>
-    </div>
-    );
-  };
-
-  return (
-    <div>
-      {renderedExpenses}
-    </div>
-  );
 }
 
 export default Expense;
