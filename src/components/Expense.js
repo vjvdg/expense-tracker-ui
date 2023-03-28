@@ -22,18 +22,35 @@ function Expense() {
       { 
         field: 'expenseDate', 
         headerName: 'Date',
-        flex: 2,
-        headerAlign: 'center',
+        flex: 21,
         align: 'center',
+        headerAlign: 'center',
+        sortable: false,
         valueGetter: (params) => `${params.row.expenseDate.slice(0, 10)}`
       },
-      { field: 'item', headerName: 'Item', flex: 5, align: 'center', headerAlign: 'center'},
-      { field: 'category', headerName: 'Category', flex: 2, align: 'center', headerAlign: 'center'},
+      { 
+        field: 'item',
+        headerName: 'Item',
+        flex: 36,
+        align: 'center',
+        headerAlign: 'center',
+        sortable: false
+      },
+      {
+        field: 'category',
+        headerName: 'Category',
+        flex: 23,
+        align: 'center',
+        headerAlign: 'center',
+        sortable: false
+      },
       {
         field: 'amount',
         headerName: 'Amount',
-        flex: 1, align: 'center',
+        flex: 20,
+        align: 'center',
         headerAlign: 'center',
+        sortable: false,
         valueFormatter: ({ value }) => currencyFormatter.format(value)
       }
     ];
@@ -43,6 +60,7 @@ function Expense() {
           <DataGrid 
             rows={expenses}
             columns={columns}
+            disableColumnMenu
           />
         </div>
     );
