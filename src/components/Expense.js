@@ -56,7 +56,7 @@ function Expense() {
     ];
 
     return (
-        <div style={{ height: 700, width: '90%', margin: 'auto'}}>
+        <div style={{ height: 550, width: '90%', margin: 'auto'}}>
           <DataGrid 
             rows={expenses}
             columns={columns}
