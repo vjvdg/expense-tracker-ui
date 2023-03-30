@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useApi } from "../hooks/UseApi";
 import expenseApi from "../api/ExpenseApi";
 import { DataGrid } from '@mui/x-data-grid';
+import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, ShoppingCart, EmojiPeople, MiscellaneousServices } from '@mui/icons-material';
+import { getFormattedDate } from "../utils/DateUtils";
 
 function Expense() {
 
@@ -18,20 +20,33 @@ function Expense() {
       currency: 'SGD',
     });
 
+    const iconMap = useMemo(() => {
+      return {
+        'TRANSPORT': <Train />,
+        'FOOD': <Fastfood />,
+        'DINING': <Restaurant />,
+        'BILLS': <Receipt />,
+        'ENTERTAINMENT': <TheaterComedy />,
+        'SHOPPING': <ShoppingCart />,
+        'LIFESTYLE': <EmojiPeople />,
+        'MISCELLANEOUS': <MiscellaneousServices />
+      }
+    }, []);
+
     const columns = [
       { 
         field: 'expenseDate', 
         headerName: 'Date',
-        flex: 21,
+        flex: 18,
         align: 'center',
         headerAlign: 'center',
         sortable: false,
-        valueGetter: (params) => `${params.row.expenseDate.slice(0, 10)}`
+        valueGetter: (params) => getFormattedDate(params.value)
       },
       { 
         field: 'item',
         headerName: 'Item',
-        flex: 36,
+        flex: 43,
         align: 'center',
         headerAlign: 'center',
         sortable: false
@@ -39,10 +54,11 @@ function Expense() {
       {
         field: 'category',
         headerName: 'Category',
-        flex: 23,
+        flex: 19,
         align: 'center',
         headerAlign: 'center',
-        sortable: false
+        sortable: false,
+        renderCell: (params) => iconMap[params.value]
       },
       {
         field: 'amount',
