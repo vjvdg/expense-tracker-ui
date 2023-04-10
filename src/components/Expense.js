@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useApi } from '../hooks/UseApi';
 import expenseApi from '../api/ExpenseApi';
-import { Button } from '@mui/material/';
+import { IconButton, Modal, Box, Typography } from '@mui/material/';
 import { DataGrid } from '@mui/x-data-grid';
-import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, MiscellaneousServices, Add } from '@mui/icons-material';
+import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, MiscellaneousServices, AddCircle } from '@mui/icons-material';
 import { getFormattedDate } from '../utils/DateUtils';
 import '../styles/expense.less';
 
@@ -11,6 +11,21 @@ function Expense() {
 
     const getExpensesApi = useApi(expenseApi.getExpensesByYearMonth);
     const expenses = getExpensesApi?.data ?? [];
+    const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+    const handleOpen = () => setShowAddExpenseModal(true);
+    const handleClose = () => setShowAddExpenseModal(false);
+
+    const addExpenseModalStyle = {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 300,
+      bgcolor: '#ffffff',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 4,
+    };
 
     useEffect(() => {
       const date = new Date();
@@ -82,7 +97,16 @@ function Expense() {
         <div className='monthly-total-header'>Monthly Total:</div>
         <div className='monthly-total'>{currencyFormatter.format(monthlyTotal)}</div>
         <div className='add-expense-button'>
-          <Button variant='contained'><Add /></Button>
+          <IconButton color='primary' size='large' onClick={handleOpen}>
+            <AddCircle fontSize='large'/>
+          </IconButton>
+          <Modal open={showAddExpenseModal} onClose={handleClose}>
+            <Box sx={addExpenseModalStyle}>
+              <Typography variant="h6" component="h1">
+                Add Expense Here
+              </Typography>
+            </Box>
+          </Modal>
         </div>
         <div style={{ height: height, width: '90%', margin: 'auto'}}>
           <DataGrid 
