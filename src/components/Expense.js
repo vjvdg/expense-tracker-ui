@@ -5,6 +5,7 @@ import { IconButton, Modal, Box, Typography } from '@mui/material/';
 import { DataGrid } from '@mui/x-data-grid';
 import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, MiscellaneousServices, AddCircle } from '@mui/icons-material';
 import { getFormattedDate } from '../utils/DateUtils';
+import ExpenseModal from './ExpenseModal';
 import '../styles/expense.less';
 
 function Expense() {
@@ -100,13 +101,11 @@ function Expense() {
           <IconButton color='primary' size='large' onClick={handleOpen}>
             <AddCircle fontSize='large'/>
           </IconButton>
-          <Modal open={showAddExpenseModal} onClose={handleClose}>
-            <Box sx={addExpenseModalStyle}>
-              <Typography variant="h6" component="h1">
-                Add Expense Here
-              </Typography>
-            </Box>
-          </Modal>
+          <ExpenseModal 
+            showAddExpenseModal={showAddExpenseModal}
+            handleOpen={handleOpen}
+            handleClose={handleClose}
+          />
         </div>
         <div style={{ height: height, width: '90%', margin: 'auto'}}>
           <DataGrid 
