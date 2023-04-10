@@ -25,6 +25,11 @@ module.exports = {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
+      {
+        test: /\.less$/i,
+        include: path.resolve(__dirname, 'src/styles'),
+        use: ["style-loader", "css-loader", "less-loader"],
+      },
     ],
   },
   plugins: [

@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo } from "react";
-import { useApi } from "../hooks/UseApi";
-import expenseApi from "../api/ExpenseApi";
+import React, { useEffect, useMemo } from 'react';
+import { useApi } from '../hooks/UseApi';
+import expenseApi from '../api/ExpenseApi';
+import { Button } from '@mui/material/';
 import { DataGrid } from '@mui/x-data-grid';
-import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, ShoppingCart, EmojiPeople, MiscellaneousServices } from '@mui/icons-material';
-import { getFormattedDate } from "../utils/DateUtils";
+import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, MiscellaneousServices, Add } from '@mui/icons-material';
+import { getFormattedDate } from '../utils/DateUtils';
+import '../styles/expense.less';
 
 function Expense() {
 
@@ -27,11 +29,15 @@ function Expense() {
         'DINING': <Restaurant />,
         'BILLS': <Receipt />,
         'ENTERTAINMENT': <TheaterComedy />,
-        'SHOPPING': <ShoppingCart />,
+        'SHOPPING': <LocalMall />,
         'LIFESTYLE': <EmojiPeople />,
         'MISCELLANEOUS': <MiscellaneousServices />
       }
     }, []);
+
+    const monthlyTotal = expenses.map(expense => expense.amount).reduce((prev, curr) => prev + curr, 0);
+
+    const height = 56 + expenses.length * 52 + 1.5;
 
     const columns = [
       { 
@@ -72,13 +78,22 @@ function Expense() {
     ];
 
     return (
-        <div style={{ height: 550, width: '90%', margin: 'auto'}}>
+      <div>
+        <div className='monthly-total-header'>Monthly Total:</div>
+        <div className='monthly-total'>{currencyFormatter.format(monthlyTotal)}</div>
+        <div className='add-expense-button'>
+          <Button variant='contained'><Add /></Button>
+        </div>
+        <div style={{ height: height, width: '90%', margin: 'auto'}}>
           <DataGrid 
             rows={expenses}
             columns={columns}
             disableColumnMenu
+            autoPageSize
+            hideFooter
           />
         </div>
+      </div>
     );
 }
 
