@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { useApi } from '../hooks/UseApi';
+import expenseApi from '../api/ExpenseApi';
 import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment } from '@mui/material/';
 import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle } from '@mui/icons-material';
 
 function ExpenseModal({ showAddExpenseModal, handleClose }) {
+
+  const saveExpenseApi = useApi(expenseApi.saveExpense);
 
   const [item, setItem] = useState('');
   const [category, setCategory] = useState('');
@@ -27,6 +31,8 @@ function ExpenseModal({ showAddExpenseModal, handleClose }) {
       'amount': amount
     };
     console.log(expense);
+    saveExpenseApi.request(expense);
+    window.location.reload();
   }
 
   const closeExpenseModal = () => {

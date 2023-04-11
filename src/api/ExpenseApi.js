@@ -8,4 +8,8 @@ function getExpensesByYearMonth(yearMonth) {
 
 }
 
-export default {getExpensesByYearMonth};
+function saveExpense(expense) {
+    return axiosClient.post('/expense/save', expense);
+}
+
+export default {getExpensesByYearMonth, saveExpense};

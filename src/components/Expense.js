@@ -41,7 +41,7 @@ function Expense() {
 
   const monthlyTotal = expenses.map(expense => expense.amount).reduce((prev, curr) => prev + curr, 0);
 
-  const height = 56 + expenses.length * 52 + 1.5;
+  const height = 50 + expenses.length * 40 + 1.5;
 
   const columns = [
     {
@@ -94,10 +94,12 @@ function Expense() {
           handleClose={handleClose}
         />
       </div>
-      <div style={{ height: height, width: '90%', margin: 'auto' }}>
+      <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '30px' }}>
         <DataGrid
           rows={expenses}
           columns={columns}
+          rowHeight={40}
+          columnHeaderHeight={50}
           disableColumnMenu
           autoPageSize
           hideFooter
