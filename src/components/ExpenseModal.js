@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useApi } from '../hooks/UseApi';
 import expenseApi from '../api/ExpenseApi';
-import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment } from '@mui/material/';
+import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress } from '@mui/material';
 import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle } from '@mui/icons-material';
 
 function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpense }) {
@@ -32,9 +32,6 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpen
     };
     console.log(expense);
     saveExpenseApi.request(expense, handleAfterSavingExpense);
-    setItem('');
-    setCategory('');
-    setAmount(0);
   }
 
   const closeExpenseModal = () => {
@@ -93,7 +90,8 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpen
           <Button 
             sx={{ my: 2, minWidth: 282 }}
             variant='contained'
-            startIcon={<AddCircle />}
+            startIcon={saveExpenseApi?.loading ? <CircularProgress color='inherit' size={17} /> : <AddCircle />}
+            disabled={saveExpenseApi?.loading}
             onClick={handleAddExpense}
           >
             Add Expense

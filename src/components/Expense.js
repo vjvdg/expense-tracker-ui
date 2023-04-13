@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApi } from '../hooks/UseApi';
 import expenseApi from '../api/ExpenseApi';
-import { IconButton, Skeleton } from '@mui/material/';
+import { CircularProgress, IconButton, Skeleton } from '@mui/material/';
 import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
-import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle, DataUsage } from '@mui/icons-material';
+import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle } from '@mui/icons-material';
 import { getFormattedDate } from '../utils/DateUtils';
 import ExpenseModal from './ExpenseModal';
 import '../styles/expense.less';
@@ -29,7 +29,7 @@ function Expense() {
   }
 
   function handleAfterSavingExpense() {
-    setShowAddExpenseModal(false);
+    handleClose();
     loadExpenses();
   }
 
@@ -103,19 +103,7 @@ function Expense() {
       <div className='monthly-total'>
         {
           getExpensesApi?.loading
-          ? <DataUsage
-              sx={{
-                animation: "spin 1s linear infinite",
-                "@keyframes spin": {
-                  "0%": {
-                    transform: "rotate(360deg)",
-                  },
-                  "100%": {
-                    transform: "rotate(0deg)",
-                  },
-                },
-              }}
-            />
+          ? <CircularProgress size={20} thickness={6}/>
           : currencyFormatter.format(monthlyTotal)
         }
         </div>
@@ -124,6 +112,7 @@ function Expense() {
           <AddCircle fontSize='large' />
         </IconButton>
         <ExpenseModal
+          key={expenses}
           showAddExpenseModal={showAddExpenseModal}
           handleClose={handleClose}
           handleAfterSavingExpense={handleAfterSavingExpense}
