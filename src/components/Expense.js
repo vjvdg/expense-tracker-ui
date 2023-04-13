@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApi } from '../hooks/UseApi';
 import expenseApi from '../api/ExpenseApi';
-import { CircularProgress, IconButton, Skeleton } from '@mui/material/';
+import { CircularProgress, IconButton, Skeleton, BottomNavigation, BottomNavigationAction, Box } from '@mui/material/';
 import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
-import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle } from '@mui/icons-material';
+import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle, Paid, History, Analytics } from '@mui/icons-material';
 import { getFormattedDate } from '../utils/DateUtils';
 import ExpenseModal from './ExpenseModal';
 import '../styles/expense.less';
@@ -14,6 +14,7 @@ function Expense() {
   const getExpensesApi = useApi(expenseApi.getExpensesByYearMonth);
   const expenses = getExpensesApi?.data ?? [];
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [index, setIndex] = useState(0);
 
   function handleOpen() {
     setShowAddExpenseModal(true);
@@ -118,7 +119,7 @@ function Expense() {
           handleAfterSavingExpense={handleAfterSavingExpense}
         />
       </div>
-      <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '30px' }}>
+      <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '70px' }}>
         {
           getExpensesApi?.loading 
           ? <Stack spacing={1}>
@@ -147,6 +148,20 @@ function Expense() {
             />
         }
       </div>
+      <Box sx={{ position: 'fixed', width: '100%', bottom: 0 }}>
+        <BottomNavigation
+          sx={{ backgroundColor: '#212121' }}
+          showLabels
+          value={index}
+          onChange={(event, newValue) => {
+            setIndex(newValue);
+          }}
+        >
+          <BottomNavigationAction sx={{ color: '#fff' }} label="Expenses" icon={<Paid />} />
+          <BottomNavigationAction sx={{ color: '#fff' }} label="History" icon={<History />} />
+          <BottomNavigationAction sx={{ color: '#fff' }} label="Insights" icon={<Analytics />} />
+        </BottomNavigation>
+      </Box>
     </div>
   );
 
