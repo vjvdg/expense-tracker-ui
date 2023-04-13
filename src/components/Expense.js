@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useApi } from '../hooks/UseApi';
 import expenseApi from '../api/ExpenseApi';
-import { IconButton } from '@mui/material/';
+import { IconButton, Skeleton } from '@mui/material/';
+import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
-import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle } from '@mui/icons-material';
+import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle, DataUsage } from '@mui/icons-material';
 import { getFormattedDate } from '../utils/DateUtils';
 import ExpenseModal from './ExpenseModal';
 import '../styles/expense.less';
@@ -13,12 +14,27 @@ function Expense() {
   const getExpensesApi = useApi(expenseApi.getExpensesByYearMonth);
   const expenses = getExpensesApi?.data ?? [];
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
-  const handleOpen = () => setShowAddExpenseModal(true);
-  const handleClose = () => setShowAddExpenseModal(false);
 
-  useEffect(() => {
+  function handleOpen() {
+    setShowAddExpenseModal(true);
+  }
+
+  function handleClose() {
+    setShowAddExpenseModal(false);
+  };
+
+  function loadExpenses() {
     const date = new Date();
     getExpensesApi.request({ year: date.getFullYear(), month: date.getMonth() + 1 });
+  }
+
+  function handleAfterSavingExpense() {
+    setShowAddExpenseModal(false);
+    loadExpenses();
+  }
+
+  useEffect(() => {
+    loadExpenses();
   }, []);
 
   const currencyFormatter = new Intl.NumberFormat('en-SG', {
@@ -84,26 +100,63 @@ function Expense() {
   return (
     <div>
       <div className='monthly-total-header'>Monthly Total:</div>
-      <div className='monthly-total'>{currencyFormatter.format(monthlyTotal)}</div>
+      <div className='monthly-total'>
+        {
+          getExpensesApi?.loading
+          ? <DataUsage
+              sx={{
+                animation: "spin 1s linear infinite",
+                "@keyframes spin": {
+                  "0%": {
+                    transform: "rotate(360deg)",
+                  },
+                  "100%": {
+                    transform: "rotate(0deg)",
+                  },
+                },
+              }}
+            />
+          : currencyFormatter.format(monthlyTotal)
+        }
+        </div>
       <div className='add-expense-button'>
-        <IconButton color='primary' size='large' onClick={handleOpen}>
+        <IconButton color='primary' size='large' onClick={handleOpen} disabled={getExpensesApi?.loading}>
           <AddCircle fontSize='large' />
         </IconButton>
         <ExpenseModal
           showAddExpenseModal={showAddExpenseModal}
           handleClose={handleClose}
+          handleAfterSavingExpense={handleAfterSavingExpense}
         />
       </div>
       <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '30px' }}>
-        <DataGrid
-          rows={expenses}
-          columns={columns}
-          rowHeight={40}
-          columnHeaderHeight={50}
-          disableColumnMenu
-          autoPageSize
-          hideFooter
-        />
+        {
+          getExpensesApi?.loading 
+          ? <Stack spacing={1}>
+              <Skeleton variant='rounded' width='100%' height={42}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+              <Skeleton variant='rounded' width='100%' height={32}/>
+            </Stack>
+          : <DataGrid
+              rows={expenses}
+              columns={columns}
+              rowHeight={40}
+              columnHeaderHeight={50}
+              disableColumnMenu
+              autoPageSize
+              hideFooter
+            />
+        }
       </div>
     </div>
   );

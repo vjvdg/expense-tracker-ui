@@ -4,7 +4,7 @@ import expenseApi from '../api/ExpenseApi';
 import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment } from '@mui/material/';
 import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle } from '@mui/icons-material';
 
-function ExpenseModal({ showAddExpenseModal, handleClose }) {
+function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpense }) {
 
   const saveExpenseApi = useApi(expenseApi.saveExpense);
 
@@ -31,8 +31,10 @@ function ExpenseModal({ showAddExpenseModal, handleClose }) {
       'amount': amount
     };
     console.log(expense);
-    saveExpenseApi.request(expense);
-    window.location.reload();
+    saveExpenseApi.request(expense, handleAfterSavingExpense);
+    setItem('');
+    setCategory('');
+    setAmount(0);
   }
 
   const closeExpenseModal = () => {
@@ -50,6 +52,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose }) {
     width: 350,
     bgcolor: '#ffffff',
     border: '2px solid #000',
+    borderRadius: '20px',
     boxShadow: 24,
     p: 4,
   };

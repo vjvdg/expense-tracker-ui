@@ -5,7 +5,7 @@ function useApi(apiFunction) {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(null);
 
-    const request = (args) => {
+    const request = (args, successCallback) => {
         console.log('apiFunction:', apiFunction);
         console.log('args:', args);
         setLoading(true);
@@ -15,6 +15,7 @@ function useApi(apiFunction) {
             .then(response => {
                 console.log('Response from API call:', response.data);
                 setData(response.data.data);
+                successCallback?.();
             }).catch(error => {
                 setError(error);
                 console.error('Error when calling API:', error);
