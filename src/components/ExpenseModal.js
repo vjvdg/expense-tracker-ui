@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AppContext } from "../App";
 import { useApi } from '../hooks/UseApi';
 import expenseApi from '../api/ExpenseApi';
 import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress } from '@mui/material';
-import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle } from '@mui/icons-material';
+import { AddCircle } from '@mui/icons-material';
+import { iconMap } from "../utils/Utils";
 
 function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpense }) {
 
+  const {metadata} = useContext(AppContext);
   const saveExpenseApi = useApi(expenseApi.saveExpense);
 
   const [item, setItem] = useState('');
@@ -30,7 +33,6 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpen
       'category': category,
       'amount': amount
     };
-    console.log(expense);
     saveExpenseApi.request(expense, handleAfterSavingExpense);
   }
 
@@ -54,6 +56,18 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpen
     p: 4,
   };
 
+  function getMenuItems() {
+    const menuItems = [];
+
+    for (const category of metadata?.categories) {
+      menuItems.push(
+        <MenuItem key={category} value={category}><Button startIcon={iconMap[category]}>{category}</Button></MenuItem>
+      );
+    }
+
+    return menuItems;
+  }
+
   return (
     <div>
       <Modal open={showAddExpenseModal} onClose={closeExpenseModal}>
@@ -68,15 +82,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpen
               label='Category'
               onChange={handleCategoryChange}
             >
-              {/* TODO: generate MenuItems dynamically from metadata */}
-              <MenuItem value='TRANSPORT'><Button startIcon={<Train />}>Transport</Button></MenuItem>
-              <MenuItem value='FOOD'><Button startIcon={<Fastfood />}>Food</Button></MenuItem>
-              <MenuItem value='DINING'><Button startIcon={<Restaurant />}>Dining</Button></MenuItem>
-              <MenuItem value='BILLS'><Button startIcon={<Receipt />}>Bills</Button></MenuItem>
-              <MenuItem value='ENTERTAINMENT'><Button startIcon={<TheaterComedy />}>Entertainment</Button></MenuItem>
-              <MenuItem value='SHOPPING'><Button startIcon={<LocalMall />}>Shopping</Button></MenuItem>
-              <MenuItem value='LIFESTYLE'><Button startIcon={<EmojiPeople />}>Lifestyle</Button></MenuItem>
-              <MenuItem value='MISCELLANEOUS'><Button startIcon={<Pending />}>Miscellaneous</Button></MenuItem>
+              {getMenuItems()}
             </Select>
           </FormControl>
           <FormControl sx={{ my: 2, minWidth: 282 }} size='small'>

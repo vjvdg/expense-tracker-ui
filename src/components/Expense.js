@@ -4,8 +4,9 @@ import expenseApi from '../api/ExpenseApi';
 import { CircularProgress, IconButton, Skeleton, BottomNavigation, BottomNavigationAction, Box } from '@mui/material/';
 import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
-import { Train, Fastfood, Restaurant, Receipt, TheaterComedy, LocalMall, EmojiPeople, Pending, AddCircle, Paid, History, Analytics } from '@mui/icons-material';
+import { AddCircle, Paid, History, Analytics } from '@mui/icons-material';
 import { getFormattedDate } from '../utils/DateUtils';
+import { iconMap } from '../utils/Utils';
 import ExpenseModal from './ExpenseModal';
 import '../styles/expense.less';
 
@@ -42,19 +43,6 @@ function Expense() {
     style: 'currency',
     currency: 'SGD',
   });
-
-  const iconMap = useMemo(() => {
-    return {
-      'TRANSPORT': <Train />,
-      'FOOD': <Fastfood />,
-      'DINING': <Restaurant />,
-      'BILLS': <Receipt />,
-      'ENTERTAINMENT': <TheaterComedy />,
-      'SHOPPING': <LocalMall />,
-      'LIFESTYLE': <EmojiPeople />,
-      'MISCELLANEOUS': <Pending />
-    }
-  }, []);
 
   const monthlyTotal = expenses.map(expense => expense.amount).reduce((prev, curr) => prev + curr, 0);
 
