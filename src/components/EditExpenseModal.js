@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../App";
 import { useApi } from '../hooks/UseApi';
 import expenseApi from '../api/ExpenseApi';
@@ -6,26 +6,29 @@ import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextFiel
 import { Delete, Edit } from '@mui/icons-material';
 import { iconMap } from "../utils/Utils";
 
-function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAfterEditingExpense }) {
+function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAfterAction }) {
 
   const {metadata} = useContext(AppContext);
   const editExpenseApi = useApi(expenseApi.editExpense);
+  const deleteExpenseApi = useApi(expenseApi.deleteExpense);
 
   const id = expense.id;
-  var item = expense.item;
-  var category = expense.category;
-  var amount = expense.amount;
+  const expenseDate = expense.expenseDate;
+
+  const [item, setItem] = useState(expense.item);
+  const [category, setCategory] = useState(expense.category);
+  const [amount, setAmount] = useState(expense.amount);
 
   const handleItemChange = (event) => {
-    console.log(event.target.value);
+    setItem(event.target.value);
   };
   
   const handleCategoryChange = (event) => {
-    console.log(event.target.value);
+    setCategory(event.target.value);
   };
 
   const handleAmountChange = (event) => {
-    console.log(event.target.value);
+    setAmount(event.target.value);
   };
 
   const handleEditExpense = () => {
@@ -33,10 +36,15 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
       'id': id,
       'item': item,
       'category': category,
-      'amount': amount
+      'amount': amount,
+      'expenseDate': expenseDate
     };
     console.log(expense);
-    // editExpenseApi.request(expense, handleAfterEditingExpense);
+    editExpenseApi.request(expense, handleAfterAction);
+  }
+
+  const handleDeleteExpense = () => {
+    deleteExpenseApi.request(id, handleAfterAction);
   }
 
   const closeExpenseModal = () => {
@@ -98,7 +106,7 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
             sx={{ my: 1, minWidth: 282 }}
             variant='contained'
             startIcon={editExpenseApi?.loading ? <CircularProgress color='inherit' size={17} /> : <Edit />}
-            disabled={editExpenseApi?.loading}
+            disabled={editExpenseApi?.loading || deleteExpenseApi?.loading}
             onClick={handleEditExpense}
           >
             Edit Expense
@@ -107,9 +115,9 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
             sx={{ minWidth: 282 }}
             variant='contained'
             color='error'
-            startIcon={editExpenseApi?.loading ? <CircularProgress color='inherit' size={17} /> : <Delete />}
-            disabled={editExpenseApi?.loading}
-            onClick={handleEditExpense}
+            startIcon={deleteExpenseApi?.loading ? <CircularProgress color='inherit' size={17} /> : <Delete />}
+            disabled={editExpenseApi?.loading || deleteExpenseApi?.loading}
+            onClick={handleDeleteExpense}
           >
             Delete Expense
           </Button>

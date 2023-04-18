@@ -20,4 +20,12 @@ function editExpense(expense) {
     });
 }
 
-export default {getExpensesByYearMonth, saveExpense, editExpense};
+function deleteExpense(id) {
+    return axiosClient.post('/expense/delete', null, {
+        params: {
+            id: id
+        }
+    });
+}
+
+export default {getExpensesByYearMonth, saveExpense, editExpense, deleteExpense};

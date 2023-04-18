@@ -6,7 +6,7 @@ import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextFiel
 import { AddCircle } from '@mui/icons-material';
 import { iconMap } from "../utils/Utils";
 
-function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpense }) {
+function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
 
   const {metadata} = useContext(AppContext);
   const saveExpenseApi = useApi(expenseApi.saveExpense);
@@ -33,7 +33,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterSavingExpen
       'category': category,
       'amount': amount
     };
-    saveExpenseApi.request(expense, handleAfterSavingExpense);
+    saveExpenseApi.request(expense, handleAfterAction);
   }
 
   const closeExpenseModal = () => {

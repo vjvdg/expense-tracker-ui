@@ -29,6 +29,7 @@ function Expense() {
   }
 
   function handleClose() {
+    setSelectedRow({});
     setShowAddExpenseModal(false);
     setShowEditExpenseModal(false);
   };
@@ -38,7 +39,7 @@ function Expense() {
     getExpensesApi.request({ year: date.getFullYear(), month: date.getMonth() + 1 });
   }
 
-  function handleAfterSavingExpense() {
+  function handleAfterAction() {
     handleClose();
     loadExpenses();
   }
@@ -118,14 +119,15 @@ function Expense() {
           key={expenses}
           showAddExpenseModal={showAddExpenseModal}
           handleClose={handleClose}
-          handleAfterSavingExpense={handleAfterSavingExpense}
+          handleAfterAction={handleAfterAction}
         />
-        <EditExpenseModal
+        {Object.keys(selectedRow).length > 0 && <EditExpenseModal
+          key={selectedRow}
           expense={selectedRow}
           showEditExpenseModal={showEditExpenseModal}
           handleClose={handleClose}
-          handleAfterEditingExpense={handleAfterSavingExpense}
-        />
+          handleAfterAction={handleAfterAction}
+        />}
       </div>
       <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '70px' }}>
         {
