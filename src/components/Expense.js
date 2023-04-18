@@ -45,7 +45,6 @@ function Expense() {
   }
 
   function handleRowClick(params) {
-    console.log(params.row);
     setSelectedRow(params.row);
     handleOpenEditExpenseModal();
   }
