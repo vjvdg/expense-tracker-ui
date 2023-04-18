@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApi } from '../hooks/UseApi';
 import expenseApi from '../api/ExpenseApi';
 import { CircularProgress, IconButton, Skeleton, BottomNavigation, BottomNavigationAction, Box } from '@mui/material/';
@@ -7,7 +7,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { AddCircle, Paid, History, Analytics } from '@mui/icons-material';
 import { getFormattedDate } from '../utils/DateUtils';
 import { iconMap } from '../utils/Utils';
-import ExpenseModal from './ExpenseModal';
+import AddExpenseModal from './AddExpenseModal';
+import EditExpenseModal from './EditExpenseModal';
 import '../styles/expense.less';
 
 function Expense() {
@@ -15,14 +16,21 @@ function Expense() {
   const getExpensesApi = useApi(expenseApi.getExpensesByYearMonth);
   const expenses = getExpensesApi?.data ?? [];
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [showEditExpenseModal, setShowEditExpenseModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState({});
   const [index, setIndex] = useState(0);
 
-  function handleOpen() {
+  function handleOpenAddExpenseModal() {
     setShowAddExpenseModal(true);
+  }
+
+  function handleOpenEditExpenseModal() {
+    setShowEditExpenseModal(true);
   }
 
   function handleClose() {
     setShowAddExpenseModal(false);
+    setShowEditExpenseModal(false);
   };
 
   function loadExpenses() {
@@ -33,6 +41,12 @@ function Expense() {
   function handleAfterSavingExpense() {
     handleClose();
     loadExpenses();
+  }
+
+  function handleRowClick(params) {
+    console.log(params.row);
+    setSelectedRow(params.row);
+    handleOpenEditExpenseModal();
   }
 
   useEffect(() => {
@@ -97,14 +111,20 @@ function Expense() {
         }
         </div>
       <div className='add-expense-button'>
-        <IconButton color='primary' size='large' onClick={handleOpen} disabled={getExpensesApi?.loading}>
+        <IconButton color='primary' size='large' onClick={handleOpenAddExpenseModal} disabled={getExpensesApi?.loading}>
           <AddCircle fontSize='large' />
         </IconButton>
-        <ExpenseModal
+        <AddExpenseModal
           key={expenses}
           showAddExpenseModal={showAddExpenseModal}
           handleClose={handleClose}
           handleAfterSavingExpense={handleAfterSavingExpense}
+        />
+        <EditExpenseModal
+          expense={selectedRow}
+          showEditExpenseModal={showEditExpenseModal}
+          handleClose={handleClose}
+          handleAfterEditingExpense={handleAfterSavingExpense}
         />
       </div>
       <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '70px' }}>
@@ -126,6 +146,11 @@ function Expense() {
               <Skeleton variant='rounded' width='100%' height={32}/>
             </Stack>
           : <DataGrid
+              sx={{
+                "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                   outline: "none !important",
+                }
+              }}
               rows={expenses}
               columns={columns}
               rowHeight={40}
@@ -133,6 +158,7 @@ function Expense() {
               disableColumnMenu
               autoPageSize
               hideFooter
+              onRowClick={handleRowClick}
             />
         }
       </div>

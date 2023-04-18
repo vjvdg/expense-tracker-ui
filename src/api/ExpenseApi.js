@@ -12,4 +12,12 @@ function saveExpense(expense) {
     return axiosClient.post('/expense/save', expense);
 }
 
-export default {getExpensesByYearMonth, saveExpense};
+function editExpense(expense) {
+    return axiosClient.post('/expense/edit', expense, {
+        params: {
+            id: expense.id
+        }
+    });
+}
+
+export default {getExpensesByYearMonth, saveExpense, editExpense};
