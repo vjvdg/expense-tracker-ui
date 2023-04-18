@@ -50,6 +50,23 @@ function Expense() {
     handleOpenEditExpenseModal();
   }
 
+  function getLoadingSkeleton() {
+    const skeleton = [];
+    skeleton.push(<Skeleton key={1} variant='rounded' width='100%' height={42}/>);
+
+    for (let i = 0; i < 12; i++) {
+      skeleton.push(<Skeleton key={i+1} variant='rounded' width='100%' height={32}/>);
+    }
+
+    return(
+      <div>
+        <Stack spacing={1}>
+          {skeleton}
+        </Stack>
+      </div>
+    );
+  }
+
   useEffect(() => {
     loadExpenses();
   }, []);
@@ -110,43 +127,29 @@ function Expense() {
           ? <CircularProgress size={20} thickness={6}/>
           : currencyFormatter.format(monthlyTotal)
         }
-        </div>
+      </div>
       <div className='add-expense-button'>
         <IconButton color='primary' size='large' onClick={handleOpenAddExpenseModal} disabled={getExpensesApi?.loading}>
           <AddCircle fontSize='large' />
         </IconButton>
-        <AddExpenseModal
-          key={expenses}
-          showAddExpenseModal={showAddExpenseModal}
-          handleClose={handleClose}
-          handleAfterAction={handleAfterAction}
-        />
-        {Object.keys(selectedRow).length > 0 && <EditExpenseModal
-          key={selectedRow}
-          expense={selectedRow}
-          showEditExpenseModal={showEditExpenseModal}
-          handleClose={handleClose}
-          handleAfterAction={handleAfterAction}
-        />}
       </div>
+      <AddExpenseModal
+        key={expenses}
+        showAddExpenseModal={showAddExpenseModal}
+        handleClose={handleClose}
+        handleAfterAction={handleAfterAction}
+      />
+      {Object.keys(selectedRow).length > 0 && <EditExpenseModal
+        key={selectedRow}
+        expense={selectedRow}
+        showEditExpenseModal={showEditExpenseModal}
+        handleClose={handleClose}
+        handleAfterAction={handleAfterAction}
+      />}
       <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '70px' }}>
         {
           getExpensesApi?.loading 
-          ? <Stack spacing={1}>
-              <Skeleton variant='rounded' width='100%' height={42}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-              <Skeleton variant='rounded' width='100%' height={32}/>
-            </Stack>
+          ? getLoadingSkeleton()
           : <DataGrid
               sx={{
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
