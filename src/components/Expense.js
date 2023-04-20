@@ -119,19 +119,21 @@ function Expense() {
 
   return (
     <div>
-      <div className='monthly-total-header'>Monthly Total:</div>
-      <div className='monthly-total'>
-        {
-          getExpensesApi?.loading
-          ? <CircularProgress size={20} thickness={6}/>
-          : currencyFormatter.format(monthlyTotal)
-        }
-      </div>
-      <div className='add-expense-button'>
-        <IconButton color='primary' size='large' onClick={handleOpenAddExpenseModal} disabled={getExpensesApi?.loading}>
-          <AddCircle fontSize='large' />
-        </IconButton>
-      </div>
+      <Box sx={{ position: 'fixed', width: '100%', top: 0, zIndex: 1, background: 'linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,1) 95%, rgba(255,255,255,0))' }}>
+        <div className='monthly-total-header'>Monthly Total:</div>
+        <div className='monthly-total'>
+          {
+            getExpensesApi?.loading
+            ? <CircularProgress size={20} thickness={6}/>
+            : currencyFormatter.format(monthlyTotal)
+          }
+        </div>
+        <div className='add-expense-button'>
+          <IconButton color='primary' size='large' onClick={handleOpenAddExpenseModal} disabled={getExpensesApi?.loading}>
+            <AddCircle fontSize='large' />
+          </IconButton>
+        </div>
+      </Box>
       <AddExpenseModal
         key={expenses}
         showAddExpenseModal={showAddExpenseModal}
@@ -145,7 +147,7 @@ function Expense() {
         handleClose={handleClose}
         handleAfterAction={handleAfterAction}
       />}
-      <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '90px' }}>
+      <div style={{ height: height, width: '90%', margin: 'auto', marginTop: '133px', marginBottom: '90px' }}>
         {
           getExpensesApi?.loading 
           ? getLoadingSkeleton()
