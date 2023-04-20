@@ -145,7 +145,7 @@ function Expense() {
         handleClose={handleClose}
         handleAfterAction={handleAfterAction}
       />}
-      <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '70px' }}>
+      <div style={{ height: height, width: '90%', margin: 'auto', marginBottom: '90px' }}>
         {
           getExpensesApi?.loading 
           ? getLoadingSkeleton()
@@ -168,16 +168,16 @@ function Expense() {
       </div>
       <Box sx={{ position: 'fixed', width: '100%', bottom: 0 }}>
         <BottomNavigation
-          sx={{ backgroundColor: '#212121' }}
+          sx={{ backgroundColor: '#212121', height: 75 }}
           showLabels
           value={index}
           onChange={(event, newValue) => {
             setIndex(newValue);
           }}
         >
-          <BottomNavigationAction sx={{ color: '#fff' }} label="Expenses" icon={<Paid />} />
-          <BottomNavigationAction sx={{ color: '#fff' }} label="History" icon={<History />} />
-          <BottomNavigationAction sx={{ color: '#fff' }} label="Insights" icon={<Analytics />} />
+          <BottomNavigationAction sx={{ color: '#fff', paddingBottom: '15px' }} label="Expenses" icon={<Paid />} />
+          <BottomNavigationAction sx={{ color: '#fff', paddingBottom: '15px' }} label="History" icon={<History />} />
+          <BottomNavigationAction sx={{ color: '#fff', paddingBottom: '15px' }} label="Insights" icon={<Analytics />} />
         </BottomNavigation>
       </Box>
     </div>

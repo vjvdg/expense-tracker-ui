@@ -39,7 +39,6 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
       'amount': amount,
       'expenseDate': expenseDate
     };
-    console.log(expense);
     editExpenseApi.request(expense, handleAfterAction);
   }
 
