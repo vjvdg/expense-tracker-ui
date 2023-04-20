@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useApi } from '../hooks/UseApi';
-import expenseApi from '../api/ExpenseApi';
+import { useApi } from '../../hooks/UseApi';
+import expenseApi from '../../api/ExpenseApi';
 import { CircularProgress, IconButton, Skeleton, BottomNavigation, BottomNavigationAction, Box } from '@mui/material/';
 import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
 import { AddCircle, Paid, History, Analytics } from '@mui/icons-material';
-import { getFormattedDate } from '../utils/DateUtils';
-import { iconMap } from '../utils/Utils';
+import { getFormattedDate } from '../../utils/DateUtils';
+import { iconMap } from '../../utils/Utils';
 import AddExpenseModal from './AddExpenseModal';
 import EditExpenseModal from './EditExpenseModal';
-import '../styles/expense.less';
+import '../../styles/expense.less';
 
 function Expense() {
 
@@ -51,7 +51,7 @@ function Expense() {
 
   function getLoadingSkeleton() {
     const skeleton = [];
-    skeleton.push(<Skeleton key={1} variant='rounded' width='100%' height={42}/>);
+    skeleton.push(<Skeleton key={0} variant='rounded' width='100%' height={42}/>);
 
     for (let i = 0; i < 12; i++) {
       skeleton.push(<Skeleton key={i+1} variant='rounded' width='100%' height={32}/>);

@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
+import { Route, Routes } from 'react-router-dom';
 import { useApi } from './hooks/UseApi';
 import metadataApi from './api/MetadataApi';
 import "./App.css";
-import Expense from "./components/Expense";
+import LoginPage from "./components/login/LoginPage";
+import Expense from "./components/expense/Expense";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -19,9 +21,10 @@ function App() {
 
   return getMetadataApi?.data && (
     <AppContext.Provider value={{ metadata: getMetadataApi?.data }}>
-      <div>
-        <Expense />
-      </div>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/home" element={<Expense />} />
+      </Routes>
     </AppContext.Provider>
   );
 }

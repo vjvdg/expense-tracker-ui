@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import { AppContext } from "../App";
-import { useApi } from '../hooks/UseApi';
-import expenseApi from '../api/ExpenseApi';
+import { AppContext } from "../../App";
+import { useApi } from '../../hooks/UseApi';
+import expenseApi from '../../api/ExpenseApi';
 import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
-import { iconMap } from "../utils/Utils";
+import { iconMap } from "../../utils/Utils";
 
 function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
 

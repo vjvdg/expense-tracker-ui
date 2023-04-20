@@ -10,6 +10,7 @@ module.exports = {
     path: path.join(__dirname, "/dist"),
     filename: "blog.js",
     clean: true,
+    publicPath: '/'
   },
   devtool: "source-map",
   module: {
@@ -31,6 +32,9 @@ module.exports = {
         use: ["style-loader", "css-loader", "less-loader"],
       },
     ],
+  },
+  devServer: {
+    historyApiFallback: true
   },
   plugins: [
     new HtmlWebpackPlugin({
