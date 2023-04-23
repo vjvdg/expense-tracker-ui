@@ -53,16 +53,14 @@ function Expense() {
     const skeleton = [];
     skeleton.push(<Skeleton key={0} variant='rounded' width='100%' height={42}/>);
 
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 13; i++) {
       skeleton.push(<Skeleton key={i+1} variant='rounded' width='100%' height={32}/>);
     }
 
-    return(
-      <div>
-        <Stack spacing={1}>
-          {skeleton}
-        </Stack>
-      </div>
+    return (
+      <Stack spacing={1}>
+        {skeleton}
+      </Stack>
     );
   }
 
