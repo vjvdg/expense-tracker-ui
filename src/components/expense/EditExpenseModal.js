@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { AppContext } from "../../App";
 import { useApi } from '../../hooks/UseApi';
 import expenseApi from '../../api/ExpenseApi';
-import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress } from '@mui/material';
+import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress, FormHelperText } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { iconMap } from "../../utils/Utils";
 
@@ -19,6 +19,10 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
   const [category, setCategory] = useState(expense.category);
   const [amount, setAmount] = useState(expense.amount);
 
+  const [itemError, setItemError] = useState(false);
+  const [categoryError, setCategoryError] = useState(false);
+  const [amountError, setAmountError] = useState(false);
+
   const handleItemChange = (event) => {
     setItem(event.target.value);
   };
@@ -31,15 +35,29 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
     setAmount(event.target.value);
   };
 
+  function checkInput() {
+    const isItemValid = item.length !== 0 && item.trim().length !== 0;
+    const isCategoryValid = category.length !== 0 && category.trim().length !== 0;
+    const isAmountValid = /(?=.*?\d)^\$?(([1-9]\d{0,2}(,\d{3})*)|\d+)?(\.\d{1,2})?$/.test(amount);
+    return { isItemValid, isCategoryValid, isAmountValid };
+  }
+
   const handleEditExpense = () => {
-    const expense = {
-      'id': id,
-      'item': item,
-      'category': category,
-      'amount': amount,
-      'expenseDate': expenseDate
-    };
-    editExpenseApi.request(expense, handleAfterAction);
+    const { isItemValid, isCategoryValid, isAmountValid } = checkInput();
+    if (!isItemValid || !isCategoryValid || !isAmountValid) {
+      setItemError(!isItemValid);
+      setCategoryError(!isCategoryValid);
+      setAmountError(!isAmountValid);
+    } else {
+      const expense = {
+        'id': id,
+        'item': item,
+        'category': category,
+        'amount': amount,
+        'expenseDate': expenseDate
+      };
+      editExpenseApi.request(expense, handleAfterAction);
+    }    
   }
 
   const handleDeleteExpense = () => {
@@ -65,8 +83,9 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
 
   function getMenuItems() {
     const menuItems = [];
+    const categories = metadata?.categories ?? [];
 
-    for (const category of metadata?.categories) {
+    for (const category of categories) {
       menuItems.push(
         <MenuItem key={category} value={category}><Button startIcon={iconMap[category]}>{category}</Button></MenuItem>
       );
@@ -80,9 +99,16 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
       <Modal open={showEditExpenseModal} onClose={closeExpenseModal}>
         <Box sx={expenseModalStyle}>
           <FormControl sx={{ my: 2, minWidth: 282 }}>
-            <TextField size='small' label='Item' variant="outlined" value={item} onChange={handleItemChange}/>
+            <TextField
+              size='small'
+              label='Item'
+              variant="outlined"
+              value={item}
+              error={itemError}
+              helperText={itemError && 'Please fill in this field.'}
+              onChange={handleItemChange}/>
           </FormControl>
-          <FormControl sx={{ my: 2, minWidth: 282 }} size='small'>
+          <FormControl sx={{ my: 2, minWidth: 282 }} size='small' error={categoryError}>
             <InputLabel>Category</InputLabel>
             <Select
               value={category}
@@ -91,8 +117,9 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
             >
               {getMenuItems()}
             </Select>
+            {categoryError && <FormHelperText>Please select a category.</FormHelperText>}
           </FormControl>
-          <FormControl sx={{ my: 2, minWidth: 282 }} size='small'>
+          <FormControl sx={{ my: 2, minWidth: 282 }} size='small' error={amountError}>
             <InputLabel>Amount</InputLabel>
             <OutlinedInput
               startAdornment={<InputAdornment position="start">$</InputAdornment>}
@@ -100,6 +127,7 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
               label="Amount"
               onChange={handleAmountChange}
             />
+            {amountError && <FormHelperText>Please input a valid amount.</FormHelperText>}
           </FormControl>
           <Button 
             sx={{ my: 1, minWidth: 282 }}

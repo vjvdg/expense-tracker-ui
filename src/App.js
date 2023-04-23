@@ -19,7 +19,7 @@ function App() {
     getMetadataApi.request();
   }, []);
 
-  return getMetadataApi?.data && (
+  return (
     <AppContext.Provider value={{ metadata: getMetadataApi?.data }}>
       <Routes>
         <Route path="/" element={<LoginPage />} />

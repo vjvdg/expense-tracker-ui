@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApi } from '../../hooks/UseApi';
 import expenseApi from '../../api/ExpenseApi';
-import { CircularProgress, IconButton, Skeleton, BottomNavigation, BottomNavigationAction, Box } from '@mui/material/';
+import { CircularProgress, IconButton, Skeleton, BottomNavigation, BottomNavigationAction, Box, Typography, ButtonBase } from '@mui/material/';
 import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
 import { AddCircle, Paid, History, Analytics } from '@mui/icons-material';
@@ -154,7 +154,7 @@ function Expense() {
           : <DataGrid
               sx={{
                 "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-                   outline: "none !important",
+                  outline: "none !important",
                 }
               }}
               rows={expenses}
@@ -166,6 +166,20 @@ function Expense() {
               hideFooter
               onRowClick={handleRowClick}
             />
+        }
+        {
+          getExpensesApi?.error &&
+          <ButtonBase
+            sx={{ width: '70%', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+            disableRipple
+            onClick={loadExpenses}
+          >
+            <Typography variant="h6" align="center" display="block">
+                Failed to load expenses.
+                <br/>
+                Tap to retry.
+            </Typography>
+          </ButtonBase>
         }
       </div>
       <Box sx={{ position: 'fixed', width: '100%', bottom: 0 }}>
