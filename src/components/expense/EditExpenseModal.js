@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AppContext } from "../../App";
 import { useApi } from '../../hooks/UseApi';
 import expenseApi from '../../api/ExpenseApi';
-import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress, FormHelperText } from '@mui/material';
+import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress, FormHelperText, Alert } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { iconMap } from "../../utils/Utils";
 
@@ -22,6 +22,16 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
   const [itemError, setItemError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [amountError, setAmountError] = useState(false);
+  const [editApiError, setEditApiError] = useState(false);
+  const [deleteApiError, setDeleteApiError] = useState(false);
+
+  useEffect(() => {
+    setEditApiError(editExpenseApi?.error);
+  }, [editExpenseApi?.error]);
+
+  useEffect(() => {
+    setDeleteApiError(deleteExpenseApi?.error);
+  }, [deleteExpenseApi?.error]);
 
   const handleItemChange = (event) => {
     setItem(event.target.value);
@@ -43,6 +53,8 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
   }
 
   const handleEditExpense = () => {
+    setEditApiError(false);
+    setDeleteApiError(false);
     const { isItemValid, isCategoryValid, isAmountValid } = checkInput();
     if (!isItemValid || !isCategoryValid || !isAmountValid) {
       setItemError(!isItemValid);
@@ -61,6 +73,8 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
   }
 
   const handleDeleteExpense = () => {
+    setEditApiError(false);
+    setDeleteApiError(false);
     deleteExpenseApi.request(id, handleAfterAction);
   }
 
@@ -98,6 +112,7 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
     <div>
       <Modal open={showEditExpenseModal} onClose={closeExpenseModal}>
         <Box sx={expenseModalStyle}>
+          {(editApiError || deleteApiError) && <Alert severity="error" sx={{ mb: 2 }}>Oops, something went wrong.</Alert>}
           <FormControl sx={{ my: 2, minWidth: 282 }}>
             <TextField
               size='small'

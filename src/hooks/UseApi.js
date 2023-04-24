@@ -17,8 +17,8 @@ function useApi(apiFunction) {
                 setData(response.data.data);
                 successCallback?.();
             }).catch(error => {
-                setError(error);
-                console.error('Error when calling API:', error);
+                setError(error.message);
+                console.error('Error when calling API:', error.message);
             }).finally(() => {
                 setLoading(false);
             });

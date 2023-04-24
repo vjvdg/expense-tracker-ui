@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../App";
 import { useApi } from '../../hooks/UseApi';
 import expenseApi from '../../api/ExpenseApi';
-import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress, FormHelperText } from '@mui/material';
+import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress, FormHelperText, Alert } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import { iconMap } from "../../utils/Utils";
 
@@ -18,6 +18,11 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
   const [itemError, setItemError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [amountError, setAmountError] = useState(false);
+  const [apiError, setApiError] = useState(false);
+
+  useEffect(() => {
+    setApiError(saveExpenseApi?.error);
+  }, [saveExpenseApi?.error]);
 
   const handleItemChange = (event) => {
     setItemError(false);
@@ -65,6 +70,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
     setItemError(false);
     setCategoryError(false);
     setAmountError(false);
+    setApiError(false);
   }
 
   const expenseModalStyle = {
@@ -97,6 +103,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
     <div>
       <Modal open={showAddExpenseModal} onClose={closeExpenseModal}>
         <Box sx={expenseModalStyle}>
+          {apiError && <Alert severity="error" sx={{ mb: 2 }}>Oops, something went wrong.</Alert>}
           <FormControl sx={{ my: 2, minWidth: 282 }}>
             <TextField 
               size='small'
