@@ -11,8 +11,8 @@ function LoginPage() {
               Hello there.
           </Typography>
       </Box>
-      <Box sx={{ position: 'absolute', top: '1%', left: '90%', opacity: '1%' }}>
-        <Link to="/home"><LockOpen color="primary" /></Link>
+      <Box sx={{ width: '10%', position: 'absolute', top: '1%', left: '50%', transform: 'translate(-50%, -1%)', opacity: '1%', textAlign: 'center' }}>
+        <Link to="/home"><LockOpen color="primary" fontSize="small"/></Link>
       </Box>
     </div>
   );
