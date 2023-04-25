@@ -44,7 +44,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: "public", to: path.join(__dirname, "/dist"), globOptions: { ignore: [ "**/index.html" ] } },
-        { from: "icons", to: path.join(__dirname, "/dist") }
+        { from: "icons", to: path.join(__dirname, "/dist/icons") }
       ],
     }),
   ],
