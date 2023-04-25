@@ -145,7 +145,7 @@ function Expense() {
         handleClose={handleClose}
         handleAfterAction={handleAfterAction}
       />}
-      <div style={{ height: height, width: '90%', margin: 'auto', marginTop: '133px', marginBottom: '90px' }}>
+      <div style={{ height: height, width: '90%', maxWidth: 700, margin: 'auto', marginTop: '133px', marginBottom: '90px' }}>
         {
           getExpensesApi?.loading 
           ? getLoadingSkeleton()
