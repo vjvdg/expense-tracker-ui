@@ -1,5 +1,5 @@
 const path = require("path");
-// const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -38,12 +38,13 @@ module.exports = {
     historyApiFallback: true
   },
   plugins: [
-    // new HtmlWebpackPlugin({
-    //   template: "public/index.html",
-    // }),
+    new HtmlWebpackPlugin({
+      template: "public/index.html",
+    }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'public' }
+        { from: "public", to: path.join(__dirname, "/dist"), globOptions: { ignore: [ "**/index.html" ] } },
+        { from: "icons", to: path.join(__dirname, "/dist") }
       ],
     }),
   ],
