@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useApi } from '../../hooks/UseApi';
 import expenseApi from '../../api/ExpenseApi';
-import { CircularProgress, IconButton, Skeleton, BottomNavigation, BottomNavigationAction, Box, Typography, ButtonBase } from '@mui/material/';
+import { CircularProgress, IconButton, Skeleton, Box, Typography, ButtonBase } from '@mui/material/';
 import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
-import { AddCircle, Paid, History, Analytics } from '@mui/icons-material';
+import { AddCircle } from '@mui/icons-material';
 import { getFormattedDate } from '../../utils/DateUtils';
 import { iconMap } from '../../utils/Utils';
 import AddExpenseModal from './AddExpenseModal';
@@ -18,7 +18,6 @@ function Expense() {
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [showEditExpenseModal, setShowEditExpenseModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
-  const [index, setIndex] = useState(0);
 
   function handleOpenAddExpenseModal() {
     setShowAddExpenseModal(true);
@@ -180,20 +179,6 @@ function Expense() {
           </ButtonBase>
         }
       </div>
-      <Box sx={{ position: 'fixed', width: '100%', bottom: 0 }}>
-        <BottomNavigation
-          sx={{ backgroundColor: '#212121', height: 75 }}
-          showLabels
-          value={index}
-          onChange={(event, newValue) => {
-            setIndex(newValue);
-          }}
-        >
-          <BottomNavigationAction sx={{ color: '#fff', paddingBottom: '15px' }} label="Expenses" icon={<Paid />} />
-          <BottomNavigationAction sx={{ color: '#fff', paddingBottom: '15px' }} label="History" icon={<History />} />
-          <BottomNavigationAction sx={{ color: '#fff', paddingBottom: '15px' }} label="Insights" icon={<Analytics />} />
-        </BottomNavigation>
-      </Box>
     </div>
   );
 
