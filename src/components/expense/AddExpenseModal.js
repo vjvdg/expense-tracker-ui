@@ -59,6 +59,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
         'amount': amount
       };
       saveExpenseApi.request(expense, handleAfterAction);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
