@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useApi } from '../../hooks/UseApi';
-import expenseApi from '../../api/ExpenseApi';
 import { CircularProgress, IconButton, Skeleton, Box, Typography, ButtonBase } from '@mui/material/';
 import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
@@ -11,10 +9,8 @@ import AddExpenseModal from './AddExpenseModal';
 import EditExpenseModal from './EditExpenseModal';
 import '../../styles/expense.less';
 
-function Expense() {
+function Expense({ getExpensesApi, expenses, loadExpenses }) {
 
-  const getExpensesApi = useApi(expenseApi.getExpensesByYearMonth);
-  const expenses = getExpensesApi?.data ?? [];
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [showEditExpenseModal, setShowEditExpenseModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
@@ -32,11 +28,6 @@ function Expense() {
     setShowAddExpenseModal(false);
     setShowEditExpenseModal(false);
   };
-
-  function loadExpenses() {
-    const date = new Date();
-    getExpensesApi.request({ year: date.getFullYear(), month: date.getMonth() + 1 });
-  }
 
   function handleAfterAction() {
     handleClose();
@@ -63,18 +54,14 @@ function Expense() {
     );
   }
 
-  useEffect(() => {
-    loadExpenses();
-  }, []);
-
   const currencyFormatter = new Intl.NumberFormat('en-SG', {
     style: 'currency',
     currency: 'SGD',
   });
 
-  const monthlyTotal = expenses.map(expense => expense.amount).reduce((prev, curr) => prev + curr, 0);
+  const monthlyTotal = expenses?.map(expense => expense.amount).reduce((prev, curr) => prev + curr, 0);
 
-  const height = 50 + expenses.length * 40 + 1.5;
+  const height = 50 + expenses?.length * 40 + 1.5;
 
   const columns = [
     {
