@@ -4,6 +4,7 @@ import expenseApi from '../../api/ExpenseApi';
 import Expense from "../expense/Expense";
 import { Box, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import { Paid, History, Analytics } from "@mui/icons-material";
+import HistoricalExpense from "../history/HistoricalExpense";
 
 function BasePage() {
 
@@ -23,6 +24,7 @@ function BasePage() {
   return (
     <div>
       {index === 0 && <Expense getExpensesApi={getExpensesApi} expenses={expenses} loadExpenses={loadExpenses} />}
+      {index === 1 && <HistoricalExpense />}
       <Box sx={{ position: 'fixed', width: '100%', bottom: 0 }}>
         <BottomNavigation
           sx={{ backgroundColor: '#212121', height: 75 }}
