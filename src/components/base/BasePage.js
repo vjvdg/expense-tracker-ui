@@ -10,6 +10,10 @@ function BasePage() {
 
   const getExpensesApi = useApi(expenseApi.getExpensesByYearMonth);
   const expenses = getExpensesApi?.data ?? [];
+
+  const getHistoricalExpensesApi = useApi(expenseApi.getExpensesByYearMonth);
+  const historicalExpenses = getHistoricalExpensesApi?.data ?? [];
+  
   const [index, setIndex] = useState(0);
 
   function loadExpenses() {
@@ -24,7 +28,7 @@ function BasePage() {
   return (
     <div>
       {index === 0 && <Expense getExpensesApi={getExpensesApi} expenses={expenses} loadExpenses={loadExpenses} />}
-      {index === 1 && <HistoricalExpense />}
+      {index === 1 && <HistoricalExpense getExpensesApi={getHistoricalExpensesApi} expenses={historicalExpenses} />}
       <Box sx={{ position: 'fixed', width: '100%', bottom: 0 }}>
         <BottomNavigation
           sx={{ backgroundColor: '#212121', height: 75 }}

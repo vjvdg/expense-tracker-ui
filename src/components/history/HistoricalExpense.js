@@ -1,12 +1,26 @@
-import React, { useState } from "react";
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import React, { useState, useContext, useEffect } from "react";
+import { AppContext } from "../../App";
+import { Box, FormControl, InputLabel, MenuItem, Select, Skeleton } from "@mui/material";
+import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
 import { getFormattedDate } from '../../utils/DateUtils';
+import { iconMap } from '../../utils/Utils';
 
-function HistoricalExpense() {
+function HistoricalExpense({ getExpensesApi, expenses }) {
 
+  const {metadata} = useContext(AppContext);
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
+
+  useEffect(() => {
+    if (year !== '' && month !== '') {
+      loadHistoricalExpenses();
+    }
+  }, [year, month]);
+
+  function loadHistoricalExpenses() {
+    getExpensesApi.request({ year: year, month: month });
+  }
 
   function handleMonthChange(event) {
     setMonth(event.target.value);
@@ -15,6 +29,74 @@ function HistoricalExpense() {
   function handleYearChange(event) {
     setYear(event.target.value);
   }
+
+  function getMonthsMenuItems() {
+    const menuItems = [];
+
+    for (const month of Object.keys(months)) {
+      menuItems.push(
+        <MenuItem key={month} value={month}>
+          {months[month]}
+        </MenuItem>
+      );
+    }
+
+    return menuItems;
+  }
+
+  function getYearsMenuItems() {
+    const menuItems = [];
+    const years = metadata?.years ?? [];
+
+    for (const year of years) {
+      menuItems.push(
+        <MenuItem key={year} value={year}>
+          {year}
+        </MenuItem>
+      );
+    }
+
+    return menuItems;
+  }
+
+  function getLoadingSkeleton() {
+    const skeleton = [];
+    skeleton.push(<Skeleton key={0} variant='rounded' width='100%' height={42}/>);
+
+    for (let i = 0; i < 13; i++) {
+      skeleton.push(<Skeleton key={i+1} variant='rounded' width='100%' height={32}/>);
+    }
+
+    return (
+      <Stack spacing={1}>
+        {skeleton}
+      </Stack>
+    );
+  }  
+
+  const months = {
+    1: 'January',
+    2: 'February',
+    3: 'March',
+    4: 'April',
+    5: 'May',
+    6: 'June',
+    7: 'July',
+    8: 'August',
+    9: 'September',
+    10: 'October',
+    11: 'November',
+    12: 'December',
+  }
+
+  const currencyFormatter = new Intl.NumberFormat('en-SG', {
+    style: 'currency',
+    currency: 'SGD',
+  });
+
+  // const monthlyTotal = expenses?.map(expense => expense.amount).reduce((prev, curr) => prev + curr, 0);
+
+  const height = 50 + expenses?.length * 40 + 1.5;  
 
   const columns = [
     {
@@ -62,6 +144,8 @@ function HistoricalExpense() {
           top: '0%',
           left: '50%',
           transform: 'translate(-50%, 0%)',
+          zIndex: 1,
+          background: 'linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,1) 95%, rgba(255,255,255,0))',
           height: 75,
           width: '90%',
           maxWidth: 700,
@@ -77,7 +161,7 @@ function HistoricalExpense() {
             label='Month'
             onChange={handleMonthChange}
           >
-            <MenuItem value={1}>January</MenuItem>
+            {getMonthsMenuItems()}
           </Select>
         </FormControl>
         <FormControl sx={{ width: '48%' }} size='small'>
@@ -87,25 +171,29 @@ function HistoricalExpense() {
             label='Year'
             onChange={handleYearChange}
           >
-            <MenuItem value={2023}>2023</MenuItem>
+            {getYearsMenuItems()}
           </Select>
         </FormControl>
       </Box>
-      <div style={{ height: 50, width: '90%', maxWidth: 700, margin: 'auto', marginTop: 75 }}>
-        <DataGrid
-          sx={{
-            "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-              outline: "none !important",
-            }
-          }}
-          rows={[]}
-          columns={columns}
-          rowHeight={40}
-          columnHeaderHeight={50}
-          disableColumnMenu
-          autoPageSize
-          hideFooter
-        />
+      <div style={{ height: height, width: '90%', maxWidth: 700, margin: 'auto', marginTop: 75, marginBottom: 90 }}>
+        {
+          getExpensesApi?.loading
+          ? getLoadingSkeleton()
+          : <DataGrid
+              sx={{
+                "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                  outline: "none !important",
+                }
+              }}
+              rows={expenses}
+              columns={columns}
+              rowHeight={40}
+              columnHeaderHeight={50}
+              disableColumnMenu
+              autoPageSize
+              hideFooter
+            />
+        }
       </div>
     </div>
   );
