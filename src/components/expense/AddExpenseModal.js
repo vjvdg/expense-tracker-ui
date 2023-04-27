@@ -93,7 +93,17 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
 
     for (const category of categories) {
       menuItems.push(
-        <MenuItem key={category} value={category}><Button startIcon={iconMap[category]}>{category}</Button></MenuItem>
+        <MenuItem key={category} value={category}>
+          <Button 
+            startIcon={iconMap[category]}
+            disableRipple
+            disableElevation
+            disableFocusRipple
+            sx={{"&:hover": {backgroundColor: "transparent", }}}
+          >
+            {category}
+          </Button>
+        </MenuItem>
       );
     }
 

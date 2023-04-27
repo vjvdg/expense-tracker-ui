@@ -32,6 +32,11 @@ module.exports = {
         include: path.resolve(__dirname, 'src/styles'),
         use: ["style-loader", "css-loader", "less-loader"],
       },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i, 
+        include: path.resolve(__dirname, 'src/assets'),
+        use: ["file-loader"],
+      }
     ],
   },
   devServer: {

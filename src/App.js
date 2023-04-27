@@ -4,7 +4,7 @@ import { useApi } from './hooks/UseApi';
 import metadataApi from './api/MetadataApi';
 import "./App.css";
 import LoginPage from "./components/login/LoginPage";
-import Expense from "./components/expense/Expense";
+import ErrorPage from "./components/error/ErrorPage";
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -23,7 +23,7 @@ function App() {
     <AppContext.Provider value={{ metadata: getMetadataApi?.data }}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/home" element={<Expense />} />
+        <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </AppContext.Provider>
   );

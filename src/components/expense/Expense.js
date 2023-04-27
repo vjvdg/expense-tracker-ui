@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useApi } from '../../hooks/UseApi';
-import expenseApi from '../../api/ExpenseApi';
-import { CircularProgress, IconButton, Skeleton, BottomNavigation, BottomNavigationAction, Box, Typography, ButtonBase } from '@mui/material/';
+import { CircularProgress, IconButton, Skeleton, Box, Typography, ButtonBase } from '@mui/material/';
 import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
-import { AddCircle, Paid, History, Analytics } from '@mui/icons-material';
+import { AddCircle } from '@mui/icons-material';
 import { getFormattedDate } from '../../utils/DateUtils';
 import { iconMap } from '../../utils/Utils';
 import AddExpenseModal from './AddExpenseModal';
 import EditExpenseModal from './EditExpenseModal';
 import '../../styles/expense.less';
 
-function Expense() {
+function Expense({ getExpensesApi, expenses, loadExpenses }) {
 
-  const getExpensesApi = useApi(expenseApi.getExpensesByYearMonth);
-  const expenses = getExpensesApi?.data ?? [];
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [showEditExpenseModal, setShowEditExpenseModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
-  const [index, setIndex] = useState(0);
 
   function handleOpenAddExpenseModal() {
     setShowAddExpenseModal(true);
@@ -33,11 +28,6 @@ function Expense() {
     setShowAddExpenseModal(false);
     setShowEditExpenseModal(false);
   };
-
-  function loadExpenses() {
-    const date = new Date();
-    getExpensesApi.request({ year: date.getFullYear(), month: date.getMonth() + 1 });
-  }
 
   function handleAfterAction() {
     handleClose();
@@ -64,18 +54,14 @@ function Expense() {
     );
   }
 
-  useEffect(() => {
-    loadExpenses();
-  }, []);
-
   const currencyFormatter = new Intl.NumberFormat('en-SG', {
     style: 'currency',
     currency: 'SGD',
   });
 
-  const monthlyTotal = expenses.map(expense => expense.amount).reduce((prev, curr) => prev + curr, 0);
+  const monthlyTotal = expenses?.map(expense => expense.amount).reduce((prev, curr) => prev + curr, 0);
 
-  const height = 50 + expenses.length * 40 + 1.5;
+  const height = 50 + expenses?.length * 40 + 1.5;
 
   const columns = [
     {
@@ -180,20 +166,6 @@ function Expense() {
           </ButtonBase>
         }
       </div>
-      <Box sx={{ position: 'fixed', width: '100%', bottom: 0 }}>
-        <BottomNavigation
-          sx={{ backgroundColor: '#212121', height: 75 }}
-          showLabels
-          value={index}
-          onChange={(event, newValue) => {
-            setIndex(newValue);
-          }}
-        >
-          <BottomNavigationAction sx={{ color: '#fff', paddingBottom: '15px' }} label="Expenses" icon={<Paid />} />
-          <BottomNavigationAction sx={{ color: '#fff', paddingBottom: '15px' }} label="History" icon={<History />} />
-          <BottomNavigationAction sx={{ color: '#fff', paddingBottom: '15px' }} label="Insights" icon={<Analytics />} />
-        </BottomNavigation>
-      </Box>
     </div>
   );
 
