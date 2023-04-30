@@ -12,10 +12,10 @@ function ErrorPage() {
     }}>
       <img src={NotFound} height={390} width={520} />
       <Typography variant="h6" align="center" width='100%'>
-            Oops. You're not supposed
-            <br/>
-            to be here.
-        </Typography>
+        Oops. You're not supposed
+        <br/>
+        to be here.
+      </Typography>
     </div>
   );
 }

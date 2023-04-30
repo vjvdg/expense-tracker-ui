@@ -13,6 +13,8 @@ function BasePage() {
 
   const getHistoricalExpensesApi = useApi(expenseApi.getExpensesByYearMonth);
   const historicalExpenses = getHistoricalExpensesApi?.data ?? [];
+  const [month, setMonth] = useState('');
+  const [year, setYear] = useState('');
   
   const [index, setIndex] = useState(0);
 
@@ -21,14 +23,24 @@ function BasePage() {
     getExpensesApi.request({ year: date.getFullYear(), month: date.getMonth() + 1 });
   }
 
+  function loadHistoricalExpenses() {
+    getHistoricalExpensesApi.request({ year: year, month: month });
+  }
+
   useEffect(() => {
     loadExpenses();
   }, []);
 
+  useEffect(() => {
+    if (year !== '' && month !== '') {
+      loadHistoricalExpenses();
+    }
+  }, [year, month]);
+
   return (
     <div>
       {index === 0 && <Expense getExpensesApi={getExpensesApi} expenses={expenses} loadExpenses={loadExpenses} />}
-      {index === 1 && <HistoricalExpense getExpensesApi={getHistoricalExpensesApi} expenses={historicalExpenses} />}
+      {index === 1 && <HistoricalExpense getExpensesApi={getHistoricalExpensesApi} expenses={historicalExpenses} loadExpenses={loadHistoricalExpenses} year={year} month={month} setYear={setYear} setMonth={setMonth} />}
       <Box sx={{ position: 'fixed', width: '100%', bottom: 0 }}>
         <BottomNavigation
           sx={{ backgroundColor: '#212121', height: 75 }}
