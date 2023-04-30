@@ -1,14 +1,18 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { AppContext } from "../../App";
+import EditExpenseModal from "../expense/EditExpenseModal";
 import { Box, FormControl, InputLabel, MenuItem, Select, Skeleton, CircularProgress } from "@mui/material";
 import { Stack } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
 import { getFormattedDate } from '../../utils/DateUtils';
 import { iconMap } from '../../utils/Utils';
 
-function HistoricalExpense({ getExpensesApi, expenses, year, month, setYear, setMonth }) {
+function HistoricalExpense({ getExpensesApi, expenses, loadExpenses, year, month, setYear, setMonth }) {
 
   const {metadata} = useContext(AppContext);
+
+  const [showEditExpenseModal, setShowEditExpenseModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState({});
 
   function handleMonthChange(event) {
     setMonth(event.target.value);
@@ -16,6 +20,25 @@ function HistoricalExpense({ getExpensesApi, expenses, year, month, setYear, set
 
   function handleYearChange(event) {
     setYear(event.target.value);
+  }
+
+  function handleOpenEditExpenseModal() {
+    setShowEditExpenseModal(true);
+  }
+
+  function handleClose() {
+    setSelectedRow({});
+    setShowEditExpenseModal(false);
+  };
+
+  function handleAfterAction() {
+    handleClose();
+    loadExpenses();
+  }
+
+  function handleRowClick(params) {
+    setSelectedRow(params.row);
+    handleOpenEditExpenseModal();
   }
 
   function getMonthsMenuItems() {
@@ -134,7 +157,7 @@ function HistoricalExpense({ getExpensesApi, expenses, year, month, setYear, set
           transform: 'translate(-50%, 0%)',
           zIndex: 1,
           background: 'linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,1) 95%, rgba(255,255,255,0))',
-          height: 150,
+          height: 133,
           width: '90%',
           maxWidth: 700,
           display: 'flex',
@@ -143,7 +166,7 @@ function HistoricalExpense({ getExpensesApi, expenses, year, month, setYear, set
           justifyContent: 'space-evenly'
         }}
       >
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', paddingTop: 10 }}>
           <FormControl sx={{ width: '48%' }} size='small'>
             <InputLabel>Month</InputLabel>
             <Select
@@ -176,7 +199,14 @@ function HistoricalExpense({ getExpensesApi, expenses, year, month, setYear, set
           </div>
         </div>
       </Box>
-      <div style={{ height: height, width: '90%', maxWidth: 700, margin: 'auto', marginTop: 150, marginBottom: 90 }}>
+      {Object.keys(selectedRow).length > 0 && <EditExpenseModal
+        key={selectedRow}
+        expense={selectedRow}
+        showEditExpenseModal={showEditExpenseModal}
+        handleClose={handleClose}
+        handleAfterAction={handleAfterAction}
+      />}      
+      <div style={{ height: height, width: '90%', maxWidth: 700, margin: 'auto', marginTop: 133, marginBottom: 90 }}>
         {
           getExpensesApi?.loading
           ? getLoadingSkeleton()
@@ -193,6 +223,7 @@ function HistoricalExpense({ getExpensesApi, expenses, year, month, setYear, set
               disableColumnMenu
               autoPageSize
               hideFooter
+              onRowClick={handleRowClick}
             />
         }
       </div>

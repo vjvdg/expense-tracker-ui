@@ -40,7 +40,7 @@ function BasePage() {
   return (
     <div>
       {index === 0 && <Expense getExpensesApi={getExpensesApi} expenses={expenses} loadExpenses={loadExpenses} />}
-      {index === 1 && <HistoricalExpense getExpensesApi={getHistoricalExpensesApi} expenses={historicalExpenses} year={year} month={month} setYear={setYear} setMonth={setMonth} />}
+      {index === 1 && <HistoricalExpense getExpensesApi={getHistoricalExpensesApi} expenses={historicalExpenses} loadExpenses={loadHistoricalExpenses} year={year} month={month} setYear={setYear} setMonth={setMonth} />}
       <Box sx={{ position: 'fixed', width: '100%', bottom: 0 }}>
         <BottomNavigation
           sx={{ backgroundColor: '#212121', height: 75 }}
