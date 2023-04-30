@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Box, ButtonBase, Typography } from "@mui/material";
 import { LockOpen } from "@mui/icons-material";
 import BasePage from "../base/BasePage";
+import Hello from "../../assets/hello.gif";
 
 function LoginPage() {
 
@@ -11,19 +12,18 @@ function LoginPage() {
     <div>
       {!reveal && 
         <div>
-          <Box 
-            sx={{ 
-              width: '100%',
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)'
-            }}
+          <div style={{
+            position: 'fixed',
+            top: '40%',
+            left: '50%',
+            transform: 'translate(-50%, -40%)'
+          }}
           >
-            <Typography variant="h1" align="center">
-                Hello there.
+            <img src={Hello} height={280} width={320} />
+            <Typography variant="h6" align="center">
+              Hello there.
             </Typography>
-          </Box>
+          </div>
           <Box 
             sx={{
               width: '10%',
