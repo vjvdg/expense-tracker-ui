@@ -1,15 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AppContext } from "../../App";
-import { useApi } from '../../hooks/UseApi';
-import expenseApi from '../../api/ExpenseApi';
+import React, { useState } from "react";
 import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress, FormHelperText, Alert } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import { iconMap } from "../../utils/Utils";
 
-function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
-
-  const {metadata} = useContext(AppContext);
-  const saveExpenseApi = useApi(expenseApi.saveExpense);
+function DemoAddExpenseModal({ expenses, setExpenses, showAddExpenseModal, handleClose }) {
 
   const [item, setItem] = useState('');
   const [category, setCategory] = useState('');
@@ -18,11 +12,6 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
   const [itemError, setItemError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [amountError, setAmountError] = useState(false);
-  const [apiError, setApiError] = useState(false);
-
-  useEffect(() => {
-    setApiError(saveExpenseApi?.error);
-  }, [saveExpenseApi?.error]);
 
   const handleItemChange = (event) => {
     setItemError(false);
@@ -53,12 +42,18 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
       setCategoryError(!isCategoryValid);
       setAmountError(!isAmountValid);
     } else {
+      const expenseDate = new Date();
       const expense = {
+        'id': Date.now(),
         'item': item,
         'category': category,
-        'amount': amount
+        'amount': amount,
+        'expenseDate': expenseDate.toISOString()
       };
-      saveExpenseApi.request(expense, handleAfterAction);
+      const newExpenses = [...expenses, expense];
+      newExpenses.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+      setExpenses(newExpenses);
+      handleClose();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
@@ -71,7 +66,6 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
     setItemError(false);
     setCategoryError(false);
     setAmountError(false);
-    setApiError(false);
   }
 
   const expenseModalStyle = {
@@ -89,7 +83,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
 
   function getMenuItems() {
     const menuItems = [];
-    const categories = metadata?.categories ?? [];
+    const categories = ['TRANSPORT', 'FOOD', 'DINING', 'BILLS', 'ENTERTAINMENT', 'SHOPPING', 'LIFESTYLE', 'MISCELLANEOUS']
 
     for (const category of categories) {
       menuItems.push(
@@ -114,7 +108,6 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
     <div>
       <Modal open={showAddExpenseModal} onClose={closeExpenseModal}>
         <Box sx={expenseModalStyle}>
-          {apiError && <Alert severity="error" sx={{ mb: 2 }}>Oops, something went wrong.</Alert>}
           <FormControl sx={{ my: 2, minWidth: 282 }}>
             <TextField 
               size='small'
@@ -149,8 +142,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
           <Button 
             sx={{ my: 2, minWidth: 282 }}
             variant='contained'
-            startIcon={saveExpenseApi?.loading ? <CircularProgress color='inherit' size={17} /> : <AddCircle />}
-            disabled={saveExpenseApi?.loading}
+            startIcon={<AddCircle />}
             onClick={handleAddExpense}
           >
             Add Expense
@@ -159,7 +151,6 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
       </Modal>
     </div>
   );
-
 }
 
-export default ExpenseModal;
+export default DemoAddExpenseModal;
