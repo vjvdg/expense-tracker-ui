@@ -159,7 +159,7 @@ function HistoricalExpense({ getExpensesApi, expenses, loadExpenses, year, month
           background: 'linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,1) 95%, rgba(255,255,255,0))',
           height: 133,
           width: '90%',
-          maxWidth: 700,
+          maxWidth: 702,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -206,7 +206,7 @@ function HistoricalExpense({ getExpensesApi, expenses, loadExpenses, year, month
         handleClose={handleClose}
         handleAfterAction={handleAfterAction}
       />}      
-      <div style={{ height: height, width: '90%', maxWidth: 700, margin: 'auto', marginTop: 133, marginBottom: 90 }}>
+      <div style={{ height: height, width: '90%', maxWidth: 702, margin: 'auto', marginTop: 133, marginBottom: 90 }}>
         {
           getExpensesApi?.loading
           ? getLoadingSkeleton()
