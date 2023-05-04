@@ -141,6 +141,7 @@ function EditExpenseModal({ expense, showEditExpenseModal, handleClose, handleAf
               value={amount}
               label="Amount"
               onChange={handleAmountChange}
+              inputProps={{ inputMode: 'decimal' }}
             />
             {amountError && <FormHelperText>Please input a valid amount.</FormHelperText>}
           </FormControl>

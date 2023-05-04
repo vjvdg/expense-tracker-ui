@@ -1,41 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AppContext } from "../../App";
-import { useApi } from '../../hooks/UseApi';
-import expenseApi from '../../api/ExpenseApi';
+import React, { useState } from "react";
 import { Button, Modal, Box, FormControl, Select, MenuItem, InputLabel, TextField, OutlinedInput, InputAdornment, CircularProgress, FormHelperText, Alert } from '@mui/material';
-import { AddCircle } from '@mui/icons-material';
+import { Delete, Edit } from '@mui/icons-material';
 import { iconMap } from "../../utils/Utils";
 
-function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
+function DemoEditExpenseModal({ expense, expenses, setExpenses, showEditExpenseModal, handleClose }) {
 
-  const {metadata} = useContext(AppContext);
-  const saveExpenseApi = useApi(expenseApi.saveExpense);
+  const id = expense.id;
+  const expenseDate = expense.expenseDate;
 
-  const [item, setItem] = useState('');
-  const [category, setCategory] = useState('');
-  const [amount, setAmount] = useState('');
+  const [item, setItem] = useState(expense.item);
+  const [category, setCategory] = useState(expense.category);
+  const [amount, setAmount] = useState(expense.amount);
 
   const [itemError, setItemError] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const [amountError, setAmountError] = useState(false);
-  const [apiError, setApiError] = useState(false);
-
-  useEffect(() => {
-    setApiError(saveExpenseApi?.error);
-  }, [saveExpenseApi?.error]);
 
   const handleItemChange = (event) => {
-    setItemError(false);
     setItem(event.target.value);
   };
   
   const handleCategoryChange = (event) => {
-    setCategoryError(false);
     setCategory(event.target.value);
   };
 
   const handleAmountChange = (event) => {
-    setAmountError(false);
     setAmount(event.target.value);
   };
 
@@ -46,7 +35,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
     return { isItemValid, isCategoryValid, isAmountValid };
   }
 
-  const handleAddExpense = () => {
+  const handleEditExpense = () => {
     const { isItemValid, isCategoryValid, isAmountValid } = checkInput();
     if (!isItemValid || !isCategoryValid || !isAmountValid) {
       setItemError(!isItemValid);
@@ -54,24 +43,32 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
       setAmountError(!isAmountValid);
     } else {
       const expense = {
+        'id': id,
         'item': item,
         'category': category,
-        'amount': amount
+        'amount': amount,
+        'expenseDate': expenseDate
       };
-      saveExpenseApi.request(expense, handleAfterAction);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+      const filtered = expenses.filter(function(expense) {
+        return expense.id !== id;
+      });
+      filtered.push(expense);
+      filtered.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+      setExpenses(filtered);
+      handleClose();
+    }    
+  }
+
+  const handleDeleteExpense = () => {
+    const filtered = expenses.filter(function(expense) {
+      return expense.id !== id;
+    });
+    setExpenses(filtered);
+    handleClose();
   }
 
   const closeExpenseModal = () => {
     handleClose();
-    setItem('');
-    setCategory('');
-    setAmount('');
-    setItemError(false);
-    setCategoryError(false);
-    setAmountError(false);
-    setApiError(false);
   }
 
   const expenseModalStyle = {
@@ -89,21 +86,11 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
 
   function getMenuItems() {
     const menuItems = [];
-    const categories = metadata?.categories ?? [];
+    const categories = ['TRANSPORT', 'FOOD', 'DINING', 'BILLS', 'ENTERTAINMENT', 'SHOPPING', 'LIFESTYLE', 'MISCELLANEOUS'];
 
     for (const category of categories) {
       menuItems.push(
-        <MenuItem key={category} value={category}>
-          <Button 
-            startIcon={iconMap[category]}
-            disableRipple
-            disableElevation
-            disableFocusRipple
-            sx={{"&:hover": {backgroundColor: "transparent", }}}
-          >
-            {category}
-          </Button>
-        </MenuItem>
+        <MenuItem key={category} value={category}><Button startIcon={iconMap[category]}>{category}</Button></MenuItem>
       );
     }
 
@@ -112,18 +99,17 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
 
   return (
     <div>
-      <Modal open={showAddExpenseModal} onClose={closeExpenseModal}>
+      <Modal open={showEditExpenseModal} onClose={closeExpenseModal}>
         <Box sx={expenseModalStyle}>
-          {apiError && <Alert severity="error" sx={{ mb: 2 }}>Oops, something went wrong.</Alert>}
           <FormControl sx={{ my: 2, minWidth: 282 }}>
-            <TextField 
+            <TextField
               size='small'
               label='Item'
               variant="outlined"
+              value={item}
               error={itemError}
               helperText={itemError && 'Please fill in this field.'}
-              onChange={handleItemChange}
-            />
+              onChange={handleItemChange}/>
           </FormControl>
           <FormControl sx={{ my: 2, minWidth: 282 }} size='small' error={categoryError}>
             <InputLabel>Category</InputLabel>
@@ -140,6 +126,7 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
             <InputLabel>Amount</InputLabel>
             <OutlinedInput
               startAdornment={<InputAdornment position="start">$</InputAdornment>}
+              value={amount}
               label="Amount"
               onChange={handleAmountChange}
               inputProps={{ inputMode: 'decimal' }}
@@ -147,19 +134,26 @@ function ExpenseModal({ showAddExpenseModal, handleClose, handleAfterAction }) {
             {amountError && <FormHelperText>Please input a valid amount.</FormHelperText>}
           </FormControl>
           <Button 
-            sx={{ my: 2, minWidth: 282 }}
+            sx={{ my: 1, minWidth: 282 }}
             variant='contained'
-            startIcon={saveExpenseApi?.loading ? <CircularProgress color='inherit' size={17} /> : <AddCircle />}
-            disabled={saveExpenseApi?.loading}
-            onClick={handleAddExpense}
+            startIcon={<Edit />}
+            onClick={handleEditExpense}
           >
-            Add Expense
+            Edit Expense
+          </Button>
+          <Button 
+            sx={{ minWidth: 282 }}
+            variant='contained'
+            color='error'
+            startIcon={<Delete />}
+            onClick={handleDeleteExpense}
+          >
+            Delete Expense
           </Button>
         </Box>
       </Modal>
     </div>
   );
-
 }
 
-export default ExpenseModal;
+export default DemoEditExpenseModal;
