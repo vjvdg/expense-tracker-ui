@@ -4,6 +4,7 @@ import { LockOpen } from "@mui/icons-material";
 import BasePage from "../base/BasePage";
 import Hello from "../../assets/hello.gif";
 import DemoExpense from "../demo/DemoExpense";
+import { PlayArrow } from "@mui/icons-material";
 
 function LoginPage() {
 
@@ -30,7 +31,7 @@ function LoginPage() {
             <Typography padding={2} variant="h4" align="center">
               Expense Tracker Application
             </Typography>
-            <Button variant="contained" size="large" disableElevation onClick={() => setDemo(true)}>
+            <Button variant="contained" size="large" disableElevation startIcon={<PlayArrow />} onClick={() => setDemo(true)}>
               Demo Application
             </Button>
           </div>
